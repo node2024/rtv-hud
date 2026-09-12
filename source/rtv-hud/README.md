@@ -1,3 +1,5 @@
 # RTV HUD 0.9.0
 
-配布ルートの README-ja.md に動作要件・導入・ビルド手順を記載しています。
+See the release root's [English README](../../README.md) or
+[日本語 README](../../README-ja.md) for requirements, installation, build instructions,
+and the project's Vibe Coding development approach.
