@@ -1,4 +1,4 @@
-# Full scroll browser 0.8.0
+# Full scroll browser
 
 `WINDOWS-START-HERE.md` を参照し、v15の `Build-Live.cmd` を実行してください。
 ページャーは廃止しました。最初のティアだけ展開し、残りは見出しクリックで開閉します。

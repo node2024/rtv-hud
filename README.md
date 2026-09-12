@@ -47,7 +47,7 @@ The Workshop VPK and map files are distributed separately.
 `source/rtv-hud/bridge` contains legacy integration source code and is not used
 to install version 0.9.0.
 
-## Installation and upgrading from 0.8.0
+## Installation
 
 1. Stop the CS2 server and back up your existing plugin binary and configuration.
 2. Ensure that Metamod and your other installed plugins are KHook-compatible.
@@ -68,9 +68,6 @@ to install version 0.9.0.
    Confirm that RTV HUD reports version `0.9.0`, `ready=1`, and `browser_assets=1`.
    With the bundled map list, it should also report `maps=364`.
 6. Verify the map browser and voting in-game.
-
-Version 0.9.0 uses the same Workshop assets as 0.8.0. If they are already installed,
-you do not need to republish the assets.
 
 ## Configuration
 
@@ -122,10 +119,66 @@ ctest --test-dir build-khook --output-on-failure
 The output is `build-khook/rtv_hud.so`. All eight existing tests passed during
 release verification.
 
-The Windows instructions under the Workshop directory are for compiling HUD
-assets. This package does not include a Windows server plugin binary.
-References to version 0.8.0 in the source tree document the history of the map
-browser assets; use this README for the current installation requirements.
+## Using Windows
+
+### Server installation
+
+**Native Windows CS2 servers are not currently supported.** The bundled
+`rtv_hud.so` is a Linux binary and cannot be loaded by a Windows server.
+The source also uses Linux-specific libraries, engine signatures, and build
+settings; building a Windows DLL requires a port, not just a different compiler.
+
+For an x86_64 Windows PC, WSL2 provides a possible way to run the Linux server.
+**RTV HUD has not been verified under WSL2; the following is a setup outline for
+testing, not a verified deployment procedure.**
+
+1. Install Ubuntu using an administrator PowerShell window:
+
+   ```powershell
+   wsl --install -d Ubuntu
+   ```
+
+   Restart as prompted, open Ubuntu, and create your Linux user account.
+   Run `wsl --list --verbose` in PowerShell and confirm that Ubuntu uses version 2.
+   See Microsoft's [WSL installation guide](https://learn.microsoft.com/en-us/windows/wsl/install).
+2. Inside Ubuntu, install SteamCMD and the **Linux CS2 dedicated server**, following
+   the [CS2 dedicated server guide](https://developer.valvesoftware.com/wiki/Counter-Strike_2/Dedicated_Servers).
+   Keep the server in the Linux filesystem, for example `~/cs2-server`.
+   A Windows CS2 installation cannot load this Linux plugin.
+3. Install the Linux versions of Metamod and MultiAddonManager in that server,
+   using the compatible versions listed above. Stop the server, then follow
+   [Installation](#installation), placing the package files in the Linux server's
+   `game/csgo/` directory. From Windows Explorer, Ubuntu files are accessible under
+   `\\wsl.localhost\Ubuntu\home\<Linux-user>\`.
+4. Start the Linux CS2 server from Ubuntu. Run `meta version`, `meta list`, and
+   `rtvhud_status` in its console, then connect with your Windows CS2 client to
+   verify the HUD and voting. Players do not install the server plugin locally.
+5. For connections from other machines, configure WSL networking and the relevant
+   Windows/Hyper-V firewall and router rules for your server ports, including UDP.
+   See Microsoft's [WSL networking guide](https://learn.microsoft.com/en-us/windows/wsl/networking).
+   Check connectivity separately from plugin loading.
+
+To build the Linux plugin in Ubuntu, install `build-essential`, `cmake`, `make`,
+`python3`, and `git`, then follow [Building from source](#building-from-source)
+in the Ubuntu shell. The result remains a Linux `.so` file. Use `build-server.sh`
+only if you have configured the `cs2server.service` service it expects.
+
+### Building HUD assets on Windows
+
+The scripts in `source/rtv-hud/workshop/` compile Workshop HUD assets; they do
+not build or install the server plugin. Normal server installation uses addon
+`3797394226` and does not require rebuilding or publishing these assets.
+
+1. Install CS2 Workshop Tools and create or open an addon named `rtv_hud`.
+2. Extract the full package and run `source/rtv-hud/workshop/Build-Live.cmd`.
+3. When prompted, enter your CS2 installation folder, containing `game` and
+   `content`, for example `D:\SteamLibrary\steamapps\common\Counter-Strike Global Offensive`.
+4. Check for `BUILD OK` and inspect the results under `workshop/build-output/`.
+   For a local preview, use `Build-LocalPreview.cmd` and follow the bundled
+   [local preview instructions (Japanese)](source/rtv-hud/workshop/LOCAL-PREVIEW.md).
+
+The Windows asset build and preview procedures are not recorded as verified
+in this package. Compilation does not automatically publish to Workshop.
 
 ## License
 
