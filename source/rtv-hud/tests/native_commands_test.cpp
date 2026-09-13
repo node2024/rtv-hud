@@ -30,7 +30,8 @@ int main() {
         assert(rtv::parseNativeCommand(text, true).action == A::Rtv);
     auto search = rtv::parseNativeCommand("\"!nominate t2 bhop\"", true);
     assert(search.action == A::Nominate && search.query == "t2 bhop" && search.valid);
-    assert(rtv::parseNativeCommand("/mapmenu t1", true).action == A::Map);
+    for (const auto* text : {"!map", "/map", "!mapmenu t1", "/mapmenu t1", "!mm", "/mm", "\"!MAP t2\""})
+        assert(rtv::parseNativeCommand(text, true).action == A::Map);
     assert(rtv::parseNativeCommand("rtvhud_map t2", false).action == A::Map);
     assert(rtv::parseNativeCommand("!hudclose", true).action == A::Close);
     assert(rtv::parseNativeCommand("rtvhud_close", false).action == A::Close);

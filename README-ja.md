@@ -1,10 +1,12 @@
-# RTV HUD 0.9.0 配布パッケージ
+# RTV HUD 0.9.1 配布パッケージ
 
 [English](README.md) | 日本語
 
 Linux x86_64 CS2 用。SourceHook から KHook に5つのフックを移行した版です。
-2026-09-12 にサーバーへの導入・読み込みを確認し、利用者によるゲーム内の動作確認も完了しました。
-同梱バイナリは確認済みの稼働バイナリと SHA-256 が一致します。今回の梱包では再ビルドしていません。
+0.9.0 は 2026-09-12 にサーバーへの導入・読み込みとゲーム内の動作を確認しました。
+0.9.1 は `!map` の入口で管理者以外を拒否する修正版です。一般プレイヤー向けの推薦画面へ
+自動で切り替える動作を廃止しました。Linux バイナリを再ビルドし、8件のテストが成功しています。
+0.9.1 の実サーバー・ゲーム内での動作は未検証です。
 
 ## 開発方針
 
@@ -33,7 +35,7 @@ RTV HUD 自体は CS2KZ・SQLMM・CounterStrikeSharp・Swiftly に依存しま�
 admins.txt は配布用に空にしています。ソース内 deploy も同じ設定です。
 サーバーの認証情報、管理者ID、DB、ログ、他プラグインのバイナリは含みません。
 Workshop VPK とマップ本体は別途配信されます。
-source/rtv-hud/bridge は旧連携用ソースで、0.9.0 の導入には使用しません。
+source/rtv-hud/bridge は旧連携用ソースで、0.9.1 の導入には使用しません。
 
 ## 導入
 
@@ -44,7 +46,7 @@ source/rtv-hud/bridge は旧連携用ソースで、0.9.0 の導入には使用�
 4. MultiAddonManager の mm_extra_addons に 3797394226 を追加します。
    既存のアドオンIDは保持してください。同梱設定は HUD 用IDのみを指定しています。
 5. 起動してサーバーコンソールで meta version、meta list、rtvhud_status を実行します。
-   RTV HUD 0.9.0、ready=1、browser_assets=1 を確認します（同梱一覧は maps=364）。
+   RTV HUD 0.9.1、ready=1、browser_assets=1 を確認します（同梱一覧は maps=364）。
 6. ゲーム内でマップ一覧・投票を確認します。
 
 設定は rtvhud_required_percent=100、待機30秒、クールダウン30秒、投票30秒、
@@ -52,6 +54,15 @@ source/rtv-hud/bridge は旧連携用ソースで、0.9.0 の導入には使用�
 設定の詳細は cfg/rtv_hud.cfg を参照してください。
 マップ一覧変更後は rtvhud_reload、管理者変更後は rtvhud_reload_admins、
 設定変更後は exec rtv_hud.cfg を実行します。
+
+`!map`・`!mapmenu`・`!mm`（`/` 形式も同様）と `rtvhud_map` は管理者専用です。
+管理者は `game/csgo/addons/rtv_hud/admins.txt` に SteamID64 を1行に1件ずつ登録し、
+サーバーコンソールで `rtvhud_reload_admins` を実行してください。空の場合は全員拒否します。
+他プラグインの管理者権限とは独立しています。`!nominate`・`!nom` は誰でも利用できます。
+一般プレイヤーには `CHANGE MAP` タブを非表示にし、確定ボタンは推薦用の `Nominate` と表示します。
+画面を閉じる際も管理者用表示を消去し、管理者一覧の再読み込み時には開いている画面を閉じます。
+0.9.0 からはサーバーを停止して `game/csgo/addons/rtv_hud/bin/linuxsteamrt64/rtv_hud.so` を
+差し替え、再起動してください。既存の管理者・マップ・設定ファイルはそのまま利用できます。
 
 ## ソースからのビルド
 

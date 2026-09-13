@@ -20,7 +20,14 @@ public:
     void close(int slot){
         if(!sessions.count(slot))return;
         hud.capture(slot,false);
-        if(hud.get())hud.setClass("browser","collapsed",true,slot);
+        if(hud.get()){
+            hud.setClass("browser","collapsed",true,slot);
+            // Clear admin controls before this slot is reused or reopened.
+            hud.setClass("mode_map","collapsed",true,slot);
+            hud.setClass("mode_map_label","collapsed",true,slot);
+            hud.set("browser_title","NOMINATE A MAP",slot);
+            hud.set("action_text","Nominate",slot);
+        }
         sessions.erase(slot);
     }
     void closeAll(){while(!sessions.empty())close(sessions.begin()->first);}
@@ -72,10 +79,12 @@ public:
         text("result",s.result);
     }
     void open(int slot,uint64_t steam,bool canMap,bool mapMode,const std::string& query,double now,const std::vector<rtv::Map>& maps,const std::string& current){
+        // Reject unauthorized map commands without opening or replacing a HUD.
+        if(mapMode&&!canMap)return;
         hud.ensure();
         rtv::BrowserSession s;s.steam=steam;s.canMap=canMap;s.mapMode=mapMode&&canMap;s.query=query;s.expires=now+timeout;
         s.expanded=rtv::firstExpandedTier(rtv::browserAll(maps,query,current));
-        s.result=mapMode&&!canMap?"Map change requires admin permission. Nomination is available.":"Choose a map, then confirm.";
+        s.result="Choose a map, then confirm.";
         sessions[slot]=std::move(s);
         try{render(slot,maps,current);}catch(...){sessions.erase(slot);hud.capture(slot,false);hud.setClass("browser","collapsed",true,slot);throw;}
         hud.setClass("browser","collapsed",false,slot);hud.capture(slot,true);

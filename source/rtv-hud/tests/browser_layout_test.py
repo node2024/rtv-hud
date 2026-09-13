@@ -18,6 +18,10 @@ for i,row in enumerate(rows):
 assert not any(x in ids for x in ['next_page','previous_page','page_label'])
 assert not re.search(r'kz_|bkz_|skz_|[0-9]{10}',p.read_text())
 assert not list(layout.iter('scripts'))
+# Admin controls must be hidden even before the first server state arrives.
+for panel_id in ['browser','mode_map','mode_map_label']:
+ panel=next(e for e in layout.iter() if e.get('id')==panel_id)
+ assert 'collapsed' in panel.get('class','').split()
 style=(root/'workshop/panorama/styles/custom_game/rtv_hud/browser_scroll.css').read_text()
 assert 'overflow: squish scroll' in style and '.pager' not in style
 plugin=(root/'src/plugin.cpp').read_text()

@@ -402,7 +402,7 @@ public:
         dispatchHook.Add(g_pCVar);
         ConVar_Register(FCVAR_RELEASE | FCVAR_GAMEDLL);
         engine->ServerCommand("exec rtv_hud.cfg\n");
-        META_CONPRINTF("[RTV HUD] Loaded 0.9.0: dynamic maplist browser; names, tiers, Global flags and Workshop IDs come from maplist.txt.\n");
+        META_CONPRINTF("[RTV HUD] Loaded 0.9.1: dynamic maplist browser; names, tiers, Global flags and Workshop IDs come from maplist.txt.\n");
         return true;
     }
     bool Unload(char*, size_t) override {
@@ -569,6 +569,9 @@ public:
         if (!ready || !steam || !GameEntitySystem()) return true;
         try {
             if (!cmd.valid) { chat("[HUD] Invalid command or search text (maximum 128 bytes).", slot.Get()); return true; }
+            if (cmd.action == rtv::Action::Map && !admins.count(steam)) {
+                chat("[Map] Admin permission required. Use !nominate to nominate a map.", slot.Get()); return true;
+            }
             if (cmd.action == rtv::Action::Rtv) { request(slot, -1); return true; }
             if (cmd.action == rtv::Action::Close) { browser.close(slot.Get()); closeVote(slot.Get(), steam); return true; }
             if (cmd.action == rtv::Action::NextMap) {
@@ -614,7 +617,7 @@ public:
             mapEnd.next ? mapEnd.next->name.c_str() : "unset",
             mapEnd.next ? mapEnd.next->workshop.c_str() : "unset", mapEnd.changeQueued);
         META_CONPRINTF("[RTV HUD] Global maplist flags: %zu\n",static_cast<size_t>(std::count_if(maps.begin(),maps.end(),rtv::hasGlobalFlag)));
-        META_CONPRINTF("[RTV HUD] Native 0.9.0: ready=%d browser_assets=%d maps=%zu admins=%zu sessions=%zu phase=%d transition=%d current=%s\n",
+        META_CONPRINTF("[RTV HUD] Native 0.9.1: ready=%d browser_assets=%d maps=%zu admins=%zu sessions=%zu phase=%d transition=%d current=%s\n",
             ready,browserAssets(),maps.size(),admins.size(),browser.sessions.size(),static_cast<int>(vote.phase),pendingMap.active(),currentMap.c_str());
     }
     void reloadMaps() {
@@ -657,7 +660,7 @@ public:
     const char* GetDescription() override { return "Native custom_hud_layout map vote"; }
     const char* GetURL() override { return ""; }
     const char* GetLicense() override { return "AGPL-3.0-or-later"; }
-    const char* GetVersion() override { return "0.9.0"; }
+    const char* GetVersion() override { return "0.9.1"; }
     const char* GetDate() override { return __DATE__; }
     const char* GetLogTag() override { return "RTVHUD"; }
 };

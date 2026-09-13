@@ -1,14 +1,14 @@
-# RTV HUD 0.9.0
+# RTV HUD 0.9.1
 
 English | [日本語](README-ja.md)
 
 RTV HUD is a map browser and map voting HUD plugin for Counter-Strike 2 servers
 running Linux x86_64. Version 0.9.0 migrates five hooks from SourceHook to KHook.
 
-Server installation and plugin loading were verified on September 12, 2026,
-and a user also confirmed successful in-game operation. The bundled binary has
-the same SHA-256 hash as the verified running binary; it was not rebuilt for
-this release package.
+Version 0.9.0 was verified on a server and in-game on September 12, 2026.
+Version 0.9.1 rejects non-admin `!map` commands instead of opening a nomination
+browser. The Linux binary has been rebuilt and all eight tests pass.
+Server loading and in-game behavior of 0.9.1 have not yet been verified.
 
 ## Development approach
 
@@ -45,7 +45,7 @@ administrator IDs, databases, logs, or binaries for other plugins.
 The Workshop VPK and map files are distributed separately.
 
 `source/rtv-hud/bridge` contains legacy integration source code and is not used
-to install version 0.9.0.
+to install version 0.9.1.
 
 ## Installation
 
@@ -65,11 +65,23 @@ to install version 0.9.0.
    rtvhud_status
    ```
 
-   Confirm that RTV HUD reports version `0.9.0`, `ready=1`, and `browser_assets=1`.
+   Confirm that RTV HUD reports version `0.9.1`, `ready=1`, and `browser_assets=1`.
    With the bundled map list, it should also report `maps=364`.
 6. Verify the map browser and voting in-game.
 
 ## Configuration
+
+`!map`, `!mapmenu`, `!mm` (including their `/` forms), and `rtvhud_map` require
+an administrator listed in `game/csgo/addons/rtv_hud/admins.txt`. Add one SteamID64
+per line, then run `rtvhud_reload_admins` in the server console. An empty list
+denies everyone. This allowlist is independent of other plugins' permissions.
+`!nominate` and `!nom` remain available to everyone.
+Non-admins see no `CHANGE MAP` tab; their confirmation button reads `Nominate`.
+Closing the browser clears admin controls, and reloading admins closes all open browsers.
+
+To upgrade from 0.9.0, stop the server, replace
+`game/csgo/addons/rtv_hud/bin/linuxsteamrt64/rtv_hud.so`, and restart.
+Keep your existing administrator list, map list, and configuration files.
 
 The bundled configuration uses these defaults:
 

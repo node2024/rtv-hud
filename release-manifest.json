@@ -1,5 +1,6 @@
 {
-  "version": "0.9.0",
+  "version": "0.9.1",
+  "change": "Reject non-admin map commands and clear admin controls when closing the browser",
   "platform": "Linux x86_64",
   "hook_api": "KHook / Metamod plugin API 18",
   "tested_versions": {
@@ -10,12 +11,12 @@
   },
   "verification": {
     "ctest": "8/8 passed",
-    "server": "ready=1 browser_assets=1 maps=364",
-    "user_gameplay": "User confirmed successful operation on 2026-09-12"
+    "server": "0.9.1 not yet verified on a live server; 0.9.0 reported ready=1 browser_assets=1 maps=364",
+    "user_gameplay": "0.9.1 not yet verified in-game; user confirmed 0.9.0 operation on 2026-09-12"
   },
   "files": {
     "game/csgo/addons/metamod/rtv_hud.vdf": "b9434b57c06dd821769c366ee2b268f77b755797c6effa66bfef6d6af3d42dfe",
-    "game/csgo/addons/rtv_hud/bin/linuxsteamrt64/rtv_hud.so": "7c189b1cad070e09278375a3ca3f603703b176367f7d171dd67db45a52c8ee51",
+    "game/csgo/addons/rtv_hud/bin/linuxsteamrt64/rtv_hud.so": "62eac2399240816d16aa00cee94fd0fe271b7858ed5158d0b35055e0c082a5ff",
     "game/csgo/addons/rtv_hud/maplist.txt": "fde452dbf57e8f96642b3316f64fad913ec736fa70ffffe4fba5fe853c882924",
     "game/csgo/cfg/rtv_hud.cfg": "e6067c25015c9930153ec804e45092b66f9595964ff2bbe608cc9963e8b70a3c",
     "game/csgo/cfg/multiaddonmanager/multiaddonmanager.cfg": "68aabb46569e1d8f5a51e972bf49046d4b1b8dc5cad75be12bdcb489091451c2"
