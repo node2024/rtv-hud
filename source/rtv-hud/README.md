@@ -1,4 +1,4 @@
-# RTV HUD 0.9.1
+# RTV HUD 0.9.2
 
 See the release root's [English README](../../README.md) or
 [日本語 README](../../README-ja.md) for requirements, installation, build instructions,

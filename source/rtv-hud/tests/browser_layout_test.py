@@ -26,4 +26,4 @@ style=(root/'workshop/panorama/styles/custom_game/rtv_hud/browser_scroll.css').r
 assert 'overflow: squish scroll' in style and '.pager' not in style
 plugin=(root/'src/plugin.cpp').read_text()
 assert 'browser_scroll.vxml_c' in plugin and 'browserCovers' not in plugin
-print(f'No-pager generic layout: {capacity} slots, {len(ids)} panel IDs, no embedded maps.')
+print(f'Compatible generic layout: {capacity} slots, {len(ids)} panel IDs, no embedded maps; native paging reuses row buttons.')

@@ -1,4 +1,4 @@
-# RTV HUD 0.9.1
+# RTV HUD 0.9.2
 
 English | [日本語](README-ja.md)
 
@@ -6,9 +6,13 @@ RTV HUD is a map browser and map voting HUD plugin for Counter-Strike 2 servers
 running Linux x86_64. Version 0.9.0 migrates five hooks from SourceHook to KHook.
 
 Version 0.9.0 was verified on a server and in-game on September 12, 2026.
-Version 0.9.1 rejects non-admin `!map` commands instead of opening a nomination
-browser. The Linux binary has been rebuilt and all eight tests pass.
-Server loading and in-game behavior of 0.9.1 have not yet been verified.
+Version 0.9.2 mitigates excessive browser replication following reports of
+`NETWORK_DISCONNECT_OVERFLOW` when opening the map list. Each page contains at
+most 24 content rows and two navigation rows. Browser entities are private to
+their owners and destroyed on close. The 0.9.1 admin restrictions are preserved.
+The Linux binary has been rebuilt and all eight tests pass. The disconnect has
+not been reproduced or confirmed resolved on a live server, and compatibility
+with the latest CS2 build has not been verified.
 
 ## Development approach
 
@@ -45,7 +49,7 @@ administrator IDs, databases, logs, or binaries for other plugins.
 The Workshop VPK and map files are distributed separately.
 
 `source/rtv-hud/bridge` contains legacy integration source code and is not used
-to install version 0.9.1.
+to install version 0.9.2.
 
 ## Installation
 
@@ -65,7 +69,7 @@ to install version 0.9.1.
    rtvhud_status
    ```
 
-   Confirm that RTV HUD reports version `0.9.1`, `ready=1`, and `browser_assets=1`.
+   Confirm that RTV HUD reports version `0.9.2`, `ready=1`, and `browser_assets=1`.
    With the bundled map list, it should also report `maps=364`.
 6. Verify the map browser and voting in-game.
 
@@ -77,11 +81,19 @@ per line, then run `rtvhud_reload_admins` in the server console. An empty list
 denies everyone. This allowlist is independent of other plugins' permissions.
 `!nominate` and `!nom` remain available to everyone.
 Non-admins see no `CHANGE MAP` tab; their confirmation button reads `Nominate`.
-Closing the browser clears admin controls, and reloading admins closes all open browsers.
+Closing the browser destroys its entity, and reloading admins closes all open browsers.
 
-To upgrade from 0.9.0, stop the server, replace
+To upgrade from 0.9.0 / 0.9.1, stop the server, replace
 `game/csgo/addons/rtv_hud/bin/linuxsteamrt64/rtv_hud.so`, and restart.
 Keep your existing administrator list, map list, and configuration files.
+Use `Next page >>` / `<< Previous page` inside the list to navigate. All matches
+remain accessible; the catalog is not truncated. Existing Workshop assets work
+without rebuilding or republishing them.
+
+If disconnects persist, collect the server log immediately before the disconnect
+and the output of `version`, `meta version`, `meta list`, and `rtvhud_status`.
+The recipient filter uses the same existing engine structure as the vote HUD;
+changes to that structure in newer CS2 builds still need live verification.
 
 The bundled configuration uses these defaults:
 

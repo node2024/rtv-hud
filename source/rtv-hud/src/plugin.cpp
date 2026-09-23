@@ -402,7 +402,7 @@ public:
         dispatchHook.Add(g_pCVar);
         ConVar_Register(FCVAR_RELEASE | FCVAR_GAMEDLL);
         engine->ServerCommand("exec rtv_hud.cfg\n");
-        META_CONPRINTF("[RTV HUD] Loaded 0.9.1: dynamic maplist browser; names, tiers, Global flags and Workshop IDs come from maplist.txt.\n");
+        META_CONPRINTF("[RTV HUD] Loaded 0.9.2: dynamic maplist browser; names, tiers, Global flags and Workshop IDs come from maplist.txt.\n");
         return true;
     }
     bool Unload(char*, size_t) override {
@@ -428,6 +428,22 @@ public:
                 const int slot = *reinterpret_cast<const int*>(reinterpret_cast<const char*>(infos[i]) + 576);
                 // Each entity is sent only to its owner, including while spectating.
                 if (!voteHuds.visibleTo(owner, slot, ownerSteam)) {
+                    auto* bits = *reinterpret_cast<CBitVec<16384>**>(infos[i]);
+                    if (bits) bits->Clear(index);
+                }
+            }
+        }
+        // Browser entities contain only one owner's bounded page, and must not
+        // be replicated to other players (including late joiners/spectators).
+        for (int owner = 0; owner < 64; ++owner) {
+            auto* entity = browser.entity(owner);
+            if (!entity) continue;
+            const auto ownerSteam = authenticated(owner);
+            const auto index = entity->GetRefEHandle().GetEntryIndex();
+            for (int i = 0; i < count; ++i) {
+                if (!infos[i]) continue;
+                const int slot = *reinterpret_cast<const int*>(reinterpret_cast<const char*>(infos[i]) + 576);
+                if (!browser.visibleTo(owner, slot, ownerSteam)) {
                     auto* bits = *reinterpret_cast<CBitVec<16384>**>(infos[i]);
                     if (bits) bits->Clear(index);
                 }
@@ -524,7 +540,7 @@ public:
         if(!ready||!GameEntitySystem()||type!=390)return {KHook::Action::Ignore};
         uint32_t packed=0;std::string button;
         if(!rtv::parseClick(data,size,packed,button))return {KHook::Action::Ignore};
-        auto* entity=browser.entity();
+        auto* entity=browser.entity(playerSlot.Get());
         if(!entity||GameEntitySystem()->GetEntityInstance(CEntityHandle::FromPackedInt(packed))!=entity)return {KHook::Action::Ignore};
         int slot=playerSlot.Get();const auto steam=authenticated(slot);auto found=browser.sessions.find(slot);
         if(!steam||found==browser.sessions.end()||found->second.steam!=steam)return {KHook::Action::Supersede};
@@ -617,7 +633,7 @@ public:
             mapEnd.next ? mapEnd.next->name.c_str() : "unset",
             mapEnd.next ? mapEnd.next->workshop.c_str() : "unset", mapEnd.changeQueued);
         META_CONPRINTF("[RTV HUD] Global maplist flags: %zu\n",static_cast<size_t>(std::count_if(maps.begin(),maps.end(),rtv::hasGlobalFlag)));
-        META_CONPRINTF("[RTV HUD] Native 0.9.1: ready=%d browser_assets=%d maps=%zu admins=%zu sessions=%zu phase=%d transition=%d current=%s\n",
+        META_CONPRINTF("[RTV HUD] Native 0.9.2: ready=%d browser_assets=%d maps=%zu admins=%zu sessions=%zu phase=%d transition=%d current=%s\n",
             ready,browserAssets(),maps.size(),admins.size(),browser.sessions.size(),static_cast<int>(vote.phase),pendingMap.active(),currentMap.c_str());
     }
     void reloadMaps() {
@@ -660,7 +676,7 @@ public:
     const char* GetDescription() override { return "Native custom_hud_layout map vote"; }
     const char* GetURL() override { return ""; }
     const char* GetLicense() override { return "AGPL-3.0-or-later"; }
-    const char* GetVersion() override { return "0.9.1"; }
+    const char* GetVersion() override { return "0.9.2"; }
     const char* GetDate() override { return __DATE__; }
     const char* GetLogTag() override { return "RTVHUD"; }
 };

@@ -84,11 +84,15 @@ struct BrowserSession {
     double expires = 0, nextClick = 0;
     std::vector<int> rows;
     std::vector<size_t> rowGroups;
+    size_t page = 0, pages = 1;
 };
 inline const std::array<std::string,9> tiers{"t1","t2","t3","t4","t5","t6","t7","t8","unknown"};
-// Stable generic row IDs bound to current server data. One interned panel ID
-// per row leaves room below the engine's 1024-string limit for toolbar controls.
+// Capacity of the existing Workshop asset, not a safe network payload budget.
 constexpr size_t BrowserRowCapacity = 960;
+// Networked state must stay small even when the asset has hundreds of slots.
+constexpr size_t BrowserPageSize = 24;
+static_assert(BrowserPageSize + 2 <= BrowserRowCapacity);
+constexpr int BrowserPreviousPage = -2, BrowserNextPage = -3;
 struct BrowserRow { int map = -1; size_t group = 0; };
 struct BrowserList {
     std::vector<BrowserRow> rows;
