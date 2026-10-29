@@ -1,0 +1,24 @@
+/* Above KZ movement (1) and the map browser (10). */
+.root { width: 100%; height: 100%; z-index: 20; }
+.vote {
+    horizontal-align: right;
+    vertical-align: bottom;
+    margin-right: 32px;
+    margin-bottom: 100px;
+    width: 460px;
+    padding: 24px;
+    flow-children: down;
+    background-color: #121b27ff;
+    border-left: 3px solid #78e8bc;
+    border-radius: 6px;
+}
+Label { font-family: Stratum2, Noto Sans; color: #f4f7fb; }
+.title { font-size: 28px; font-weight: bold; letter-spacing: 2px; color: #78e8bc; }
+.status { font-size: 20px; margin-top: 8px; }
+.choices { width: 100%; flow-children: down; margin-top: 16px; margin-bottom: 12px; }
+.choice { width: 100%; font-size: 20px; padding: 8px 0px; text-overflow: shrink; }
+.choice.selected {
+    color: #c5ff78;
+    background-color: #c5ff7826;
+}
+.hint { font-size: 15px; color: #b0bdcb; }

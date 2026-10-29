@@ -1,0 +1,18 @@
+<root>
+  <styles><include src="file://{resources}/styles/custom_game/rtv_hud/vote.css" /></styles>
+  <Panel class="root" hittest="false">
+    <Panel class="vote" hittest="false">
+      <Label id="title" class="title" text="ROCK THE VOTE" />
+      <Label id="status" class="status" text="24 seconds remaining (sample)" />
+      <Panel class="choices" hittest="false">
+        <Label id="choice1" class="choice" text="1. [T1] kz_11342   [3]" />
+        <Label id="choice2" class="choice" text="2. [T1] kz_beginnerblock   [1]" />
+        <Label id="choice3" class="choice" text="3. [T1] kz_grassworld   [0]" />
+        <Label id="choice4" class="choice" text="4. [T1] kz_kiwiparadise   [2]" />
+        <Label id="choice5" class="choice" text="5. [T1] kz_onlime   [0]" />
+        <Label id="choice6" class="choice" text="6. [T1] kz_summercliff2   [1]" />
+      </Panel>
+      <Label id="hint" class="hint" text="LOCAL PREVIEW - Sample values only" />
+    </Panel>
+  </Panel>
+</root>

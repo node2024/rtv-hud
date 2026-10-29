@@ -1,0 +1,5 @@
+"Metamod Plugin"
+{
+    "alias" "rtvhud"
+    "file" "addons/rtv_hud/bin/linuxsteamrt64/rtv_hud"
+}

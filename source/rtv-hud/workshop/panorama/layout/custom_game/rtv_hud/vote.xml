@@ -1,0 +1,18 @@
+<root>
+  <styles><include src="file://{resources}/styles/custom_game/rtv_hud/vote.css" /></styles>
+  <Panel class="root" hittest="false">
+    <Panel class="vote" hittest="false">
+      <Label id="title" class="title" text="{s:text}" />
+      <Label id="status" class="status" text="{s:text}" />
+      <Panel class="choices" hittest="false">
+        <Label id="choice1" class="choice" text="{s:text}" />
+        <Label id="choice2" class="choice" text="{s:text}" />
+        <Label id="choice3" class="choice" text="{s:text}" />
+        <Label id="choice4" class="choice" text="{s:text}" />
+        <Label id="choice5" class="choice" text="{s:text}" />
+        <Label id="choice6" class="choice" text="{s:text}" />
+      </Panel>
+      <Label id="hint" class="hint" text="{s:text}" />
+    </Panel>
+  </Panel>
+</root>
