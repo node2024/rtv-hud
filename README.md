@@ -46,10 +46,11 @@ The historical 0.9.0 server setup used Metamod 2.0.0-dev+1467, CS2KZ 0.0.172 and
 CounterStrikeSharp and ClientCvarValue disabled. RTV HUD itself does not depend
 on CS2KZ, SQLMM, CounterStrikeSharp, or Swiftly.
 
-## Package contents
+## Repository contents
 
-- `game/csgo/`: Linux plugin binary, VDF file, configuration, and a list of 364 maps.
-- `source/rtv-hud/`: corresponding source code, tests, build scripts, and Workshop assets.
+- `deploy/`: Linux plugin binary, VDF file, configuration, and a list of 364 maps.
+- `src/`, `tests/`, and the build scripts at the repository root: plugin source and tests.
+- `workshop/`: Workshop HUD assets and Windows asset build scripts.
 - `LICENSE`, `NOTICE.md`, and `THIRD_PARTY/`: license and attribution information.
 - `release-manifest.json` and `SHA256SUMS.txt`: release metadata and file checksums.
 
@@ -58,17 +59,18 @@ source tree's `deploy` directory. The package contains no server credentials,
 administrator IDs, databases, logs, or binaries for other plugins.
 The Workshop VPK and map files are distributed separately.
 
-`source/rtv-hud/bridge` contains legacy integration source code and is not used
+`bridge/` contains legacy integration source code and is not used
 to install version 0.9.4.
-Deployment files live under `source/rtv-hud/deploy` in the source repository;
+Deployment files live under `deploy/` in the source repository;
 the release ZIP also includes them under `game/csgo`.
 
 ## Installation
 
 1. Stop the CS2 server and back up your existing plugin binary and configuration.
 2. Update Metamod and your other plugins for the latest CS2 update and KHook.
-3. Copy the contents of this package's `game/csgo/` directory into your server's
-   `game/csgo/` directory. For existing `admins.txt`, `maplist.txt`, and configuration
+3. Copy the contents of this repository's `deploy/` directory (or `game/csgo/`
+   in the release ZIP) into your server's `game/csgo/` directory.
+   For existing `admins.txt`, `maplist.txt`, and configuration
    files, merge only the changes you need. **Do not overwrite your administrator
    list with the empty bundled `admins.txt`.**
 4. Add `3797394226` to MultiAddonManager's `mm_extra_addons` setting, preserving
@@ -125,7 +127,7 @@ The bundled configuration uses these defaults:
 | Change to the winning map | Enabled |
 | End-of-map voting | Enabled |
 
-See [`game/csgo/cfg/rtv_hud.cfg`](game/csgo/cfg/rtv_hud.cfg) for configuration details.
+See [`deploy/cfg/rtv_hud.cfg`](deploy/cfg/rtv_hud.cfg) for configuration details.
 After making changes, run the appropriate command in the server console:
 
 | Change | Command |
@@ -137,7 +139,7 @@ After making changes, run the appropriate command in the server console:
 ## Building from source
 
 You need Linux, a C++20 compiler, CMake, Make, Python 3, and Git.
-From `source/rtv-hud/`, run `bash bootstrap.sh` to fetch the pinned SDK and
+From the repository root, run `bash bootstrap.sh` to fetch the pinned SDK and
 Metamod dependencies.
 
 **If you build on the same host as the CS2 server, stop CS2 before building.**
@@ -147,7 +149,7 @@ It requires permission to manage the systemd service and leaves the server stopp
 after completion.
 
 For other setups, stop the server using the appropriate method for your environment,
-confirm that it has stopped, and run these commands from `source/rtv-hud/`:
+confirm that it has stopped, and run these commands from the repository root:
 
 ```sh
 cmake -S . -B build-khook -DCMAKE_BUILD_TYPE=Release \
@@ -207,17 +209,17 @@ only if you have configured the `cs2server.service` service it expects.
 
 ### Building HUD assets on Windows
 
-The scripts in `source/rtv-hud/workshop/` compile Workshop HUD assets; they do
+The scripts in `workshop/` compile Workshop HUD assets; they do
 not build or install the server plugin. Normal server installation uses addon
 `3797394226` and does not require rebuilding or publishing these assets.
 
 1. Install CS2 Workshop Tools and create or open an addon named `rtv_hud`.
-2. Extract the full package and run `source/rtv-hud/workshop/Build-Live.cmd`.
+2. Open the full source checkout and run `workshop/Build-Live.cmd`.
 3. When prompted, enter your CS2 installation folder, containing `game` and
    `content`, for example `D:\SteamLibrary\steamapps\common\Counter-Strike Global Offensive`.
 4. Check for `BUILD OK` and inspect the results under `workshop/build-output/`.
    For a local preview, use `Build-LocalPreview.cmd` and follow the bundled
-   [local preview instructions (Japanese)](source/rtv-hud/workshop/LOCAL-PREVIEW.md).
+   [local preview instructions (Japanese)](workshop/LOCAL-PREVIEW.md).
 
 The Windows asset build and preview procedures are not recorded as verified
 in this package. Compilation does not automatically publish to Workshop.

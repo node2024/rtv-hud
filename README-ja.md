@@ -1,4 +1,4 @@
-# RTV HUD 0.9.4 配布パッケージ
+# RTV HUD 0.9.4
 
 [English](README.md) | 日本語
 
@@ -39,22 +39,24 @@ RTV HUD 自体は CS2KZ・SQLMM・CounterStrikeSharp・Swiftly に依存しま�
 
 ## 内容
 
-- game/csgo/: 配置用 Linux バイナリ、VDF、設定、364件のマップ一覧
-- source/rtv-hud/: 対応ソース、テスト、ビルドスクリプト、Workshop 素材
+- deploy/: 配置用 Linux バイナリ、VDF、設定、364件のマップ一覧
+- src/、tests/、ルートのビルドスクリプト: プラグインのソースとテスト
+- workshop/: Workshop 素材と Windows 用素材ビルドスクリプト
 - LICENSE / NOTICE.md / THIRD_PARTY/: ライセンスと由来
 - release-manifest.json / SHA256SUMS.txt: 版情報とファイル照合用情報
 
 admins.txt は配布用に空にしています。ソース内 deploy も同じ設定です。
 サーバーの認証情報、管理者ID、DB、ログ、他プラグインのバイナリは含みません。
 Workshop VPK とマップ本体は別途配信されます。
-source/rtv-hud/bridge は旧連携用ソースで、0.9.4 の導入には使用しません。
-ソースリポジトリでは配置用ファイルは source/rtv-hud/deploy/ にあり、配布ZIPでは game/csgo/ としても収録します。
+bridge/ は旧連携用ソースで、0.9.4 の導入には使用しません。
+ソースリポジトリでは配置用ファイルは deploy/ にあり、配布ZIPでは game/csgo/ としても収録します。
 
 ## 導入
 
 1. CS2 サーバーを停止し、既存のバイナリと設定をバックアップします。
 2. Metamod と併用プラグインを、最新CS2更新と KHook に対応した版に揃えます。
-3. game/csgo/ のファイルを配置します。既存の admins.txt、maplist.txt、cfg は
+3. このリポジトリの deploy/（配布ZIPでは game/csgo/）の内容をサーバーの game/csgo/ に配置します。
+   既存の admins.txt、maplist.txt、cfg は
    必要な差分だけ反映してください。空の admins.txt で既存管理者を上書きしないでください。
 4. MultiAddonManager の mm_extra_addons に 3797394226 を追加します。
    既存のアドオンIDは保持してください。同梱設定は HUD 用IDのみを指定しています。
@@ -64,7 +66,7 @@ source/rtv-hud/bridge は旧連携用ソースで、0.9.4 の導入には使用�
 
 設定は rtvhud_required_percent=100、待機30秒、クールダウン30秒、投票30秒、
 結果表示5秒、一覧タイムアウト120秒。勝利マップへの変更と終了前投票を有効にしています。
-設定の詳細は cfg/rtv_hud.cfg を参照してください。
+設定の詳細は [deploy/cfg/rtv_hud.cfg](deploy/cfg/rtv_hud.cfg) を参照してください。
 マップ一覧変更後は rtvhud_reload、管理者変更後は rtvhud_reload_admins、
 設定変更後は exec rtv_hud.cfg を実行します。
 `admins.txt` 登録者はチャットの `!rtvhud_reload` / `/rtvhud_reload`、またはクライアントコンソールの
@@ -89,7 +91,7 @@ source/rtv-hud/bridge は旧連携用ソースで、0.9.4 の導入には使用�
 ## ソースからのビルド
 
 Linux の C++20 コンパイラ、CMake、Make、Python 3、Git が必要です。
-source/rtv-hud/ で bash bootstrap.sh を実行すると固定版の SDK / Metamod を取得します。
+リポジトリ直下で bash bootstrap.sh を実行すると固定版の SDK / Metamod を取得します。
 CS2 と同じホストでビルドするときは必ず CS2 を停止してから実行してください。
 cs2server.service を使う環境では bash build-server.sh が停止・確認・単一ジョブでの
 ビルド・テストを行います。systemd 操作権限が必要で、完了後もサーバーは停止状態です。
@@ -151,17 +153,17 @@ Ubuntu 内でソースからビルドする場合は、`build-essential`、`cmak
 
 ### Windows での HUD 素材のビルド
 
-`source/rtv-hud/workshop/` のスクリプトは Workshop 用 HUD 素材のコンパイル用です。
+`workshop/` のスクリプトは Workshop 用 HUD 素材のコンパイル用です。
 サーバープラグインのビルド・導入は行いません。通常のサーバー導入ではアドオン
 `3797394226` を使用するため、素材の再ビルドや公開は不要です。
 
 1. CS2 Workshop Tools をインストールし、`rtv_hud` というアドオンを作成するか、既存のものを開きます。
-2. パッケージ全体を展開し、`source/rtv-hud/workshop/Build-Live.cmd` を実行します。
+2. ソース一式を開き、`workshop/Build-Live.cmd` を実行します。
 3. 入力を求められたら、`game` と `content` を含む CS2 のインストール先を指定します。
    例: `D:\SteamLibrary\steamapps\common\Counter-Strike Global Offensive`
 4. `BUILD OK` と `workshop/build-output/` 内の成果物を確認します。
    ローカルプレビューには `Build-LocalPreview.cmd` を使い、
-   [プレビュー手順](source/rtv-hud/workshop/LOCAL-PREVIEW.md)に従ってください。
+   [プレビュー手順](workshop/LOCAL-PREVIEW.md)に従ってください。
 
 本パッケージでは Windows 上の素材ビルド・プレビューの検証記録はありません。
 コンパイルによって Workshop へ自動公開されることはありません。
